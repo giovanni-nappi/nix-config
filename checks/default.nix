@@ -41,7 +41,7 @@
         enable = true;
         package = pkgs.nixfmt-rfc-style;
       };
-      shfmt.enable = true;
+      shfmt.enable = false;
 
       end-of-file-fixer.enable = true;
     };

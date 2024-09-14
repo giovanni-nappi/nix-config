@@ -57,8 +57,8 @@
     # Private secrets repo.  See ./docs/secretsmgmt.md
     # Authenticate via ssh and use shallow clone
     nix-secrets = {
-      url = "git+ssh://git@gitlab.com/emergentmind/nix-secrets.git?ref=main&shallow=1";
-      inputs = { };
+      url = "git+ssh://git@github.com/giovanni-nappi/nix-secrets.git?ref=main&shallow=1";
+      flake = false;
     };
   };
 
@@ -72,10 +72,7 @@
     }@inputs:
     let
       inherit (self) outputs;
-      forAllSystems = nixpkgs.lib.genAttrs [
-        "x86_64-linux"
-        #"aarch64-darwin"
-      ];
+      forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" ];
       inherit (nixpkgs) lib;
       configVars = import ./vars { inherit inputs lib; };
       configLib = import ./lib { inherit lib; };
@@ -91,8 +88,12 @@
     in
     {
       # Custom modules to enable special functionality for nixos or home-manager oriented configs.
-      nixosModules = { inherit (import ./modules/nixos); };
-      homeManagerModules = { inherit (import ./modules/home-manager); };
+      nixosModules = {
+        inherit (import ./modules/nixos);
+      };
+      homeManagerModules = {
+        inherit (import ./modules/home-manager);
+      };
 
       # Custom modifications/overrides to upstream packages.
       overlays = import ./overlays { inherit inputs outputs; };
@@ -128,7 +129,7 @@
           pkgs = nixpkgs.legacyPackages.${system};
           checks = self.checks.${system};
         in
-          import ./shell.nix { inherit checks pkgs; }
+        import ./shell.nix { inherit checks pkgs; }
       );
 
       #################### NixOS Configurations ####################
@@ -161,6 +162,15 @@
             home-manager.nixosModules.home-manager
             { home-manager.extraSpecialArgs = specialArgs; }
             ./hosts/gusto
+          ];
+        };
+        # Qemu VM dev lab
+        vento = lib.nixosSystem {
+          inherit specialArgs;
+          modules = [
+            home-manager.nixosModules.home-manager
+            { home-manager.extraSpecialArgs = specialArgs; }
+            ./hosts/vento
           ];
         };
       };

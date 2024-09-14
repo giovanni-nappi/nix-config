@@ -13,8 +13,8 @@
       ./hardware-configuration.nix
 
       #################### Hardware Modules ####################
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
+      #inputs.hardware.nixosModules.common-cpu-amd
+      #inputs.hardware.nixosModules.common-gpu-amd
       inputs.hardware.nixosModules.common-pc-ssd
 
       #################### Disk Layout ####################
@@ -22,7 +22,7 @@
       (configLib.relativeToRoot "hosts/common/disks/standard-disk-config.nix")
       {
         _module.args = {
-          disk = "/dev/vda";
+          disk = "/dev/sda";
           withSwap = false;
         };
       }
@@ -36,7 +36,7 @@
       "hosts/common/optional/services/openssh.nix"
 
       #################### Users to Create ####################
-      "hosts/common/users/ta"
+      "hosts/common/users/krino"
     ]);
 
   services.gnome.gnome-keyring.enable = true;
@@ -58,5 +58,5 @@
   };
 
   # https://wiki.nixos.org/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "23.11";
+  system.stateVersion = "24.05";
 }

@@ -5,4 +5,3 @@
 {
   imports = configLib.scanPaths ./.;
 }
-

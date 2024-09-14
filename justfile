@@ -1,5 +1,7 @@
 SOPS_FILE := "../nix-secrets/secrets.yaml"
 
+# qemu-system-x86_64 -hdd /tmp/vento.img -m 16G -netdev user,id=net0,hostfwd=tcp::8022-:22 -device virtio-net-pci,netdev=net0 -bios /nix/store/7a68vhgrwhp3i6lppv570111jmsb2mn2-OVMF-202402-fd/FV/OVMF.fd -daemonize
+
 # default recipe to display help information
 default:
   @just --list
@@ -57,6 +59,14 @@ iso:
 
 iso-install DRIVE: iso
   sudo dd if=$(eza --sort changed result/iso/*.iso | tail -n1) of={{DRIVE}} bs=4M status=progress oflag=sync
+
+# creates a qemu raw disk
+disk-create FILE SIZE:
+  qemu-img create {{FILE}} {{SIZE}}
+
+# runs a VM booting from ISO and using the DISK
+iso-run DISK ISO MEM:
+  qemu-system-x86_64 -cdrom {{ISO}} -hdd {{DISK}} -m {{MEM}} -netdev user,id=net0,hostfwd=tcp::8022-:22 -device virtio-net-pci,netdev=net0 -bios /nix/store/7a68vhgrwhp3i6lppv570111jmsb2mn2-OVMF-202402-fd/FV/OVMF.fd -daemonize
 
 disko DRIVE PASSWORD:
   echo "{{PASSWORD}}" > /tmp/disko-password

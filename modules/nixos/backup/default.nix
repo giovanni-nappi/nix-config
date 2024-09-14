@@ -426,8 +426,8 @@ in
           path = "${config.users.users.root.home}/.ssh/id_borg";
         };
       };
-# TODO set this up
-#      services.per-network-services.trustedNetworkServices = [ "borg-backup" ];
+      # TODO set this up
+      #      services.per-network-services.trustedNetworkServices = [ "borg-backup" ];
     }
   );
 }

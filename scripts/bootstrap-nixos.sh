@@ -6,7 +6,7 @@ target_hostname=""
 target_destination=""
 target_user="ta"
 ssh_key=""
-ssh_port="22"
+ssh_port="8022"
 persist_dir=""
 # Create a temp directory for generated host keys
 temp=$(mktemp -d)
@@ -164,7 +164,7 @@ function nixos_anywhere() {
 	$scp_cmd root@"$target_destination":/mnt/etc/nixos/hardware-configuration.nix "${git_root}"/hosts/"$target_hostname"/hardware-configuration.nix
 
 	# --extra-files here picks up the ssh host key we generated earlier and puts it onto the target machine
-	SHELL=/bin/sh nix run github:nix-community/nixos-anywhere -- --ssh-port "$ssh_port" --extra-files "$temp" --flake .#"$target_hostname" root@"$target_destination"
+	SHELL=/bin/sh nix run github:nix-community/nixos-anywhere/bc77bd1cca884bacba44058659d44141bea53a03 -- --ssh-port "$ssh_port" --extra-files "$temp" --flake .#"$target_hostname" root@"$target_destination"
 
 	echo "Updating ssh host fingerprint at $target_destination to ~/.ssh/known_hosts"
 	ssh-keyscan -p "$ssh_port" "$target_destination" >>~/.ssh/known_hosts || true
@@ -295,12 +295,12 @@ if yes_or_no "Do you want to copy your full nix-config and nix-secrets to $targe
 	green "Copying full nix-secrets to $target_hostname"
 	sync "$target_user" "${git_root}"/../nix-secrets
 
-if yes_or_no "Do you want to rebuild immediately?"; then
-	green "Rebuilding nix-config on $target_hostname"
-	#FIXME there are still a gitlab fingerprint request happening during the rebuild
-	#$ssh_cmd -oForwardAgent=yes "cd nix-config && sudo nixos-rebuild --show-trace --flake .#$target_hostname" switch"
-	$ssh_cmd -oForwardAgent=yes "cd nix-config && just rebuild"
-fi
+	if yes_or_no "Do you want to rebuild immediately?"; then
+		green "Rebuilding nix-config on $target_hostname"
+		#FIXME there are still a gitlab fingerprint request happening during the rebuild
+		#$ssh_cmd -oForwardAgent=yes "cd nix-config && sudo nixos-rebuild --show-trace --flake .#$target_hostname" switch"
+		$ssh_cmd -oForwardAgent=yes "cd nix-config && just rebuild"
+	fi
 else
 	echo
 	green "NixOS was successfully installed!"
