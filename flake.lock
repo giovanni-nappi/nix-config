@@ -260,10 +260,10 @@
     "nix-secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1726322558,
-        "narHash": "sha256-Bc/1gLsWHoQAI1hRoix32NQBHXxQ+cSYeTW6P0F4ZXc=",
+        "lastModified": 1726393021,
+        "narHash": "sha256-Cxnayq/7kbUGhrE1zSvZ5RCBr8YU1rXiQPAhR+OS09g=",
         "ref": "main",
-        "rev": "41b0089187c9cc56e1250296a35aae214241e5cd",
+        "rev": "b3fbacaba34b8c1610ab2a950afaa399dd3c29ce",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/giovanni-nappi/nix-secrets.git"
